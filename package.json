@@ -1,0 +1,25 @@
+{
+  "name": "hey-siri-summarise-this",
+  "version": "1.0.0",
+  "description": "A satirical incremental (\"idle clicker\") game parodying Apple Intelligence / Siri summaries.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "test": "node --test",
+    "check": "node --check vendor/decimal.min.js && echo 'index.html is static; tests boot it via jsdom'",
+    "serve": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "idle-game",
+    "incremental",
+    "parody",
+    "satire",
+    "vanilla-js"
+  ],
+  "author": "Ian Hogers",
+  "license": "MIT",
+  "devDependencies": {
+    "decimal.js": "10.4.3",
+    "jsdom": "^24.0.0"
+  }
+}
