@@ -1,5 +1,9 @@
 # Apple Intelligence™ — The Idle Game
 
+![100% AI Generated](https://img.shields.io/badge/100%25-AI%20Generated-9d80ff?style=flat-square)
+
+> **100% AI generated.** Every line of code, copy, and documentation in this project was written by AI.
+
 A satirical incremental ("idle clicker") game about how useless Apple Intelligence / Siri
 summaries are. You tap **"Hey Siri, Summarise this"**; Siri restates things you can already
 see, then summarises the summary, forever. Numbers go up into the decillions. It never gets
