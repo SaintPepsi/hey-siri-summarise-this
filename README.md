@@ -51,7 +51,7 @@ npm test      # boots the game in jsdom and asserts tap/recompute/no-errors
 ### Deploy to GitHub Pages
 1. Push to a repo (e.g. `main` branch).
 2. Repo → **Settings → Pages → Source: Deploy from a branch → `main` / root**.
-3. The bare-Pages URL is `https://<user>.github.io/<repo>/`.
+3. The bare-Pages URL is `https://saintpepsi.github.io/hey-siri-summarise-this/`.
 
 `localStorage` and offline progress work normally on Pages (it's a real origin). No `.nojekyll`
 file is needed unless you add asset paths beginning with underscores.
@@ -62,12 +62,12 @@ bind the custom domain automatically. To wire it up:
 
 1. **DNS** (at your domain registrar / DNS host for `ianhogers.com`): add a **CNAME record**
 
-   | Type  | Host (name) | Value                  | TTL  |
-   |-------|-------------|------------------------|------|
-   | CNAME | `summarise` | `<user>.github.io.`    | auto |
+   | Type  | Host (name) | Value                      | TTL  |
+   |-------|-------------|----------------------------|------|
+   | CNAME | `summarise` | `saintpepsi.github.io.`    | auto |
 
-   (Replace `<user>` with your GitHub username. A subdomain uses a `CNAME` record pointing at
-   `<user>.github.io` — only an apex/root domain needs the four `A` records to GitHub's IPs.)
+   (A subdomain uses a `CNAME` record pointing at `saintpepsi.github.io` — only an apex/root
+   domain would need the four `A` records to GitHub's IPs.)
 2. **GitHub:** Repo → **Settings → Pages → Custom domain** → enter `summarise.ianhogers.com` → Save.
    Leave **Enforce HTTPS** ticked once the certificate provisions (can take a few minutes).
 3. Visit **https://summarise.ianhogers.com** once DNS propagates.
