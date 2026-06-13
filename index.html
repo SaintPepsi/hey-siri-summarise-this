@@ -15,6 +15,7 @@
     --pill:rgba(255,255,255,.13); --pill-hi:rgba(255,255,255,.22); --seg-on:rgba(255,255,255,.22);
     --blue:#0a84ff; --green:#30d158; --gold:#ffd60a;
     --accent:#9d80ff; --shadow:0 14px 40px rgba(0,0,0,.55);
+    --gap:16px;   /* one standard spacing unit used across the page */
   }
   html[data-theme="light"]{
     --bg:#eef0f5; --ink:#1d1d1f; --ink-dim:#5e5e63; --ink-faint:#6f6f75; /* dim #6e6e73→#5e5e63, faint #9b9ba1→#6f6f75 for WCAG AA (2.6→4.7:1) */
@@ -25,18 +26,18 @@
     --accent:#7c5cff; --shadow:0 12px 34px rgba(20,24,60,.10);
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html{min-height:100%;overflow-y:scroll}
+  html,body{height:100%}
   body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    color:var(--ink); background:var(--bg); position:relative; -webkit-font-smoothing:antialiased; overflow-x:hidden}
+    color:var(--ink); background:var(--bg); position:relative; -webkit-font-smoothing:antialiased; overflow:hidden}
   /* ambient colour so the glass has something to refract */
   .glow{position:fixed;inset:0;z-index:0;pointer-events:none}
   .glow::before,.glow::after{content:"";position:absolute;border-radius:50%;filter:blur(120px);opacity:.55}
   .glow::before{width:60vw;height:60vw;left:-12vw;top:-14vw;background:radial-gradient(circle at 30% 30%,#cdbcff,transparent 70%)}
   .glow::after{width:55vw;height:55vw;right:-14vw;bottom:-16vw;background:radial-gradient(circle at 60% 60%,#a9d6ff,transparent 70%)}
 
-  .app{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr) 384px;
-    gap:22px;max-width:1180px;margin:0 auto;padding:18px 20px 150px;align-items:start}
-  .main{min-width:0;display:grid;gap:20px;align-content:start}
+  .app{position:relative;z-index:2;height:100dvh;max-width:720px;margin:0 auto;
+    padding:14px 16px 0;display:flex;flex-direction:column}
+  .main{flex:1 1 auto;min-width:0;min-height:0;display:flex;flex-direction:column;gap:var(--gap);padding-bottom:150px}
   .shop{min-width:0;display:flex;flex-direction:column;gap:18px}
 
   /* top bar */
@@ -155,19 +156,19 @@
   .totem.spin svg{animation:spin .5s linear infinite} .totem.forever svg{animation:wob 1.1s ease-in-out infinite}
   @keyframes spin{to{transform:rotate(360deg)}} @keyframes wob{0%,100%{transform:rotate(-9deg)}50%{transform:rotate(9deg)}}
   .credit{position:fixed;right:18px;bottom:16px;z-index:40;font-size:12px;color:var(--ink-faint)}
-  .disclaimer{position:relative;z-index:2;max-width:62ch;margin:40px auto 24px;padding:0 20px;text-align:center;font-size:11px;line-height:1.5;color:var(--ink-faint)}
+  .disclaimer{position:relative;z-index:1;max-width:62ch;margin:40px auto 24px;padding:0 20px;text-align:center;font-size:11px;line-height:1.5;color:var(--ink-faint)}
 
   .frenzy{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:60;
     background:linear-gradient(90deg,#ff6ec7,#ff9f0a);color:#fff;font-weight:700;font-size:14px;
     padding:9px 18px;border-radius:999px;box-shadow:0 10px 26px rgba(255,110,199,.45),inset 0 1px 0 rgba(255,255,255,.4);display:none}
 
-  .golden{position:fixed;z-index:55;cursor:pointer;max-width:300px;
-    background:var(--glass-solid);backdrop-filter:blur(30px) saturate(180%);-webkit-backdrop-filter:blur(30px) saturate(180%);
-    border:.5px solid var(--highlight);border-left:3px solid var(--gold);border-radius:18px;padding:13px 16px;
-    box-shadow:0 16px 40px rgba(20,24,60,.22);animation:goldpop .3s ease}
-  .golden .gh{font-size:11px;letter-spacing:.02em;text-transform:none;color:var(--gold);font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px}
-  .golden .gh .dot{width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
-  .golden .gb{font-size:14px;color:var(--ink);font-weight:500}
+  /* golden "someone is texting" event — same card as a Siri summary, fixed width so it can't
+     reflow/clip while it flies across the screen; a gold edge marks it as the special one */
+  .golden{position:fixed;z-index:55;cursor:pointer;width:340px;max-width:86vw}
+  .golden .siri{background:var(--glass-solid);backdrop-filter:blur(34px) saturate(180%);-webkit-backdrop-filter:blur(34px) saturate(180%);
+    box-shadow:0 18px 48px rgba(0,0,0,.42);border-left:3px solid var(--gold)}
+  .golden .label{color:var(--gold);font-weight:700}
+  .golden .body{font-size:15px}
   @keyframes goldpop{from{transform:scale(.6);opacity:0}to{transform:scale(1);opacity:1}}
 
   /* sponsored ad — looks like an App Store product sheet */
@@ -189,7 +190,7 @@
     border:.5px solid var(--highlight);color:var(--ink);font-size:13px;font-weight:600;
     padding:11px 18px;border-radius:999px;box-shadow:0 14px 34px rgba(20,24,60,.22);animation:goldpop .25s ease}
 
-  @media(max-width:880px){ .app{grid-template-columns:1fr} .go .chev{animation:none} .title{font-size:26px} }
+  @media(max-width:880px){ .go .chev{animation:none} .title{font-size:26px} }
   @media(max-width:520px){ .heronum{font-size:42px} .adtoast{top:auto;bottom:124px} }
   @media(prefers-reduced-motion:reduce){.go .chev,.totem svg{animation:none!important}}
 
@@ -201,7 +202,7 @@
   /* 3D receding notification stack */
   .siriwrap{position:relative}
   .stage{position:relative;height:280px;perspective:1200px;margin-bottom:10px}
-  .layer{position:absolute;left:50%;bottom:6px;width:min(440px,94%);transform:translate(-50%,0);
+  .layer{position:absolute;left:50%;top:50%;width:min(440px,94%);transform:translate(-50%,-50%);
     transition:transform .55s cubic-bezier(.22,.61,.18,1),opacity .5s ease,filter .5s ease;will-change:transform,opacity,filter}
   .layer .siri{background:var(--glass-solid);backdrop-filter:blur(34px) saturate(180%);-webkit-backdrop-filter:blur(34px) saturate(180%);box-shadow:0 18px 48px rgba(0,0,0,.42)}
   /* What's New (Apple-style version history) */
@@ -219,7 +220,95 @@
   .dismiss:hover{background:var(--pill-hi)}
   .resetlink{display:block;margin:14px auto 2px;background:none;border:none;color:var(--ink-faint);font:inherit;font-size:12px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
   .resetlink:hover{color:var(--ink-dim)}
-  @media(max-width:520px){ .stage{height:230px} }
+  @media(max-width:520px){ .stage{height:230px} .totem{display:none} }
+
+  /* ===================================================================
+     App shell — ONE layout for every view: compact score on top, the
+     notification stack owning the middle, and an iOS Liquid-Glass tab
+     bar + bottom sheet at the bottom. The page itself never scrolls;
+     only the shop sheet scrolls internally.
+     =================================================================== */
+  .lede{display:none}                       /* no room in app mode */
+  .topbar .themebtn{display:none}           /* theme toggle lives in Settings */
+  .badge:empty,.tab .badge:empty{display:none}
+  .sheetscrim{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .3s}
+  body.shopopen .sheetscrim{opacity:1;pointer-events:auto}
+
+  /* score area stays compact so the notification stack owns the middle */
+  .hero{padding:14px 18px;border-radius:20px}
+  .heronum{font-size:clamp(30px,6.5vw,46px)}
+  .statrow{gap:8px}
+  .chip{padding:9px 12px;font-size:11px}
+  .chip b{font-size:16px}
+
+  /* notification area fills the space above the dock */
+  .siriwrap{flex:1 1 auto;min-height:0;display:flex;flex-direction:column;justify-content:center;overflow:hidden}
+  .siriwrap .stage{flex:1 1 auto;height:auto;min-height:140px;margin-bottom:0}
+
+  /* ---- bottom dock: variants → Hey Siri → tab bar, one standard --gap between each ---- */
+  .dock{position:fixed;left:50%;transform:translateX(-50%);z-index:35;
+    bottom:calc(2*var(--gap) + env(safe-area-inset-bottom,0) + var(--barh,56px));width:min(480px,calc(100% - 2*var(--gap)));
+    display:flex;flex-direction:column;align-items:center;gap:var(--gap)}
+  .dock .variants{margin:0;text-align:center}
+  .clickzone{position:relative;background:none;padding:0;display:grid;justify-items:center}
+  .tabbar{position:fixed;left:50%;transform:translateX(-50%);z-index:60;
+    bottom:calc(var(--gap) + env(safe-area-inset-bottom,0));width:min(480px,calc(100% - 2*var(--gap)));
+    display:flex;align-items:center;gap:var(--gap);
+    background:var(--glass-solid);backdrop-filter:blur(34px) saturate(180%);-webkit-backdrop-filter:blur(34px) saturate(180%);
+    border:.5px solid var(--highlight);border-radius:24px;padding:8px var(--gap);box-shadow:var(--shadow)}
+  .tab{position:relative;flex:1;background:none;border:none;cursor:pointer;font-family:inherit;
+    display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--ink-faint);font-weight:600;font-size:10px;padding:2px 0;transition:color .15s}
+  .tab .ti{width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1}
+  .tab:hover,.tab:focus-visible,.tab.on{color:var(--blue)}
+  .tab .badge{position:absolute;top:0;left:calc(50% + 7px);min-width:18px;height:18px;border-radius:999px;background:#ff453a;color:#fff;
+    font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center;padding:0 5px;border:1.5px solid var(--glass-solid)}
+  .credit{display:none}
+  @media(max-width:520px){ .totem{display:none} }
+
+  /* shop = bottom sheet (full-bleed phone, floating pill ≥600px) */
+  .shop{position:fixed;left:0;right:0;z-index:50;overflow-y:auto;gap:14px;
+    bottom:calc(2*var(--gap) + env(safe-area-inset-bottom,0) + var(--barh,56px));
+    max-height:calc(100dvh - var(--barh,56px) - 96px);
+    padding:0 14px 16px;
+    background:var(--glass-solid);backdrop-filter:blur(34px) saturate(180%);-webkit-backdrop-filter:blur(34px) saturate(180%);
+    border:.5px solid var(--highlight);border-radius:26px;box-shadow:0 20px 60px rgba(0,0,0,.5);
+    transform:translateY(120%);transition:transform .38s cubic-bezier(.22,.61,.18,1)}
+  body.shopopen .shop{transform:translateY(0)}
+  .sheethead{display:flex;flex-direction:column;align-items:stretch;position:sticky;top:0;z-index:3;
+    background:linear-gradient(var(--glass-solid),var(--glass-solid) 72%,transparent);padding:0 4px 6px}
+  .sheethead .grab{width:42px;height:5px;border-radius:3px;background:var(--ink-faint);opacity:.5;margin:10px auto 8px}
+  .sheethead .hrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 6px}
+  .sheethead h2{font-size:19px;font-weight:800;color:var(--ink)}
+  .sheetclose{border:none;background:var(--pill);color:var(--ink);border-radius:999px;width:34px;height:34px;font-size:16px;cursor:pointer}
+  .shop .bulkbar{padding:2px 6px}
+  .shop .whatsnew,.shop .disclaimer{margin:0}   /* relocated into the sheet */
+
+  @media(min-width:600px){
+    .shop{left:50%;right:auto;width:min(560px,94%);transform:translateX(-50%) translateY(120%)}
+    body.shopopen .shop{transform:translateX(-50%) translateY(0)}
+  }
+
+  /* short viewports: shrink the score (drop flavour/decoration) so the summary stack never overlaps it */
+  @media(max-height:760px){
+    .app{padding-top:10px}
+    .eyebrow{display:none}
+    .hero .bars{display:none}
+    .hero{padding:10px 16px}
+    .heronum{font-size:clamp(26px,5vw,36px)}
+    .herolab{font-size:10px;margin-top:2px}
+    .statrow{gap:6px}
+    .chip{padding:7px 10px;font-size:10px}
+    .chip b{font-size:14px}
+    .main{gap:10px}
+    .siriwrap .stage{min-height:110px}
+  }
+  @media(max-height:620px){
+    .title{font-size:20px}
+    .hero{padding:8px 14px}
+    .heronum{font-size:26px}
+    .variants{font-size:11px}
+    .siriwrap .stage{min-height:84px}
+  }
 
 </style>
 </head>
@@ -233,7 +322,7 @@
         <div class="eyebrow">Wednesday 10 June · Apple Intelligence™</div>
         <div class="title">Apple Intelligence™ <span class="reality" id="realitybadge">Update 1</span></div>
       </div>
-      <div class="actions"><button class="themebtn" id="themebtn" title="Toggle light / dark">🌙</button><div class="avatar">🛍️</div></div>
+      <div class="actions"><button class="themebtn" id="themebtn" title="Toggle light / dark">🌙</button></div>
     </div>
     <div class="lede">Apple promised AI that would change everything. Instead, Siri summarises messages you can already see — then summarises the summary. Tap to make it do more of that. It does <em>not</em> get better.</div>
 
@@ -250,7 +339,6 @@
 
     <div class="siriwrap">
       <div class="stage" id="stage"></div>
-      <div class="variants">Summary variants unlocked at this depth: <b id="variantcount">0</b></div>
     </div>
 
     <div class="panel whatsnew">
@@ -304,7 +392,11 @@
     </div>
   </div>
 
-  <div class="shop">
+  <div class="shop" id="shop">
+    <div class="sheethead">
+      <div class="grab"></div>
+      <div class="hrow"><h2>Shop</h2><button class="sheetclose" id="sheetclose" title="Close" aria-label="Close shop">✕</button></div>
+    </div>
     <div class="bulkbar"><span>Buy</span>
       <span class="seg">
         <button data-amt="1" class="on">×1</button>
@@ -312,18 +404,34 @@
         <button data-amt="M">Max</button>
       </span>
     </div>
-    <div class="panel"><h2>Apple Intelligence · summarising for you</h2><div class="list" id="genlist"></div></div>
-    <div class="panel"><h2>Model Upgrades · allegedly better</h2><div class="list" id="uplist"></div></div>
-    <div class="panel apple"><h2>🛍️ Apple Store <span class="gen" id="applegenlab">Gen 1</span></h2><div class="list" id="applelist"></div></div>
-    <div class="panel"><h2>Goals · permanent boosts</h2><div class="list" id="goallist"></div></div>
-    <div class="panel vault"><h2>Settings · <span id="totembal">0</span> tokens</h2><div class="list" id="vaultlist"></div></div>
-    <div class="kickpanel">
+    <div class="panel" data-shop="gen"><h2>Apple Intelligence · summarising for you</h2><div class="list" id="genlist"></div></div>
+    <div class="panel" data-shop="up"><h2>Model Upgrades · allegedly better</h2><div class="list" id="uplist"></div></div>
+    <div class="panel apple" data-shop="store"><h2>🛍️ Apple Store <span class="gen" id="applegenlab">Gen 1</span></h2><div class="list" id="applelist"></div></div>
+    <div class="panel" data-shop="goals"><h2>Goals · permanent boosts</h2><div class="list" id="goallist"></div></div>
+    <div class="panel vault" data-shop="settings"><h2>Settings · <span id="totembal">0</span> tokens</h2><div class="list" id="vaultlist"></div></div>
+    <div class="panel appearance" data-shop="settings"><h2>Appearance</h2><div class="list"><div class="item" id="themetoggle"><div class="ico">🌙</div><div class="txt"><div class="nm">Theme</div><div class="bl">Switch between dark and light. Either way, the summaries are useless.</div></div><div class="cost" id="thememode">Dark</div></div></div></div>
+    <div class="kickpanel" data-shop="settings">
       <h2>Install Update</h2>
       <p>Install the update that finally fixes Siri. (It won't.) Resets your summaries, Apple Intelligence features and model upgrades, but you keep a <b>Token</b> for every milestone of total summarising — each boosts everything forever <em>and</em> can be spent in Settings. Apple products, tokens, goals and milestones carry over.</p>
       <button class="kickbtn" id="kick" disabled>Update unavailable</button>
       <button class="resetlink" id="resetbtn">Erase save &amp; restart</button>
     </div>
   </div>
+
+  <div class="sheetscrim" id="sheetscrim"></div>
+  <div class="dock" id="dock">
+    <div class="variants">Summary variants unlocked at this depth: <b id="variantcount">0</b></div>
+    <div class="clickzone" id="clickzone">
+      <button class="go" id="go"><span>Hey Siri, Summarise this</span><span class="chev">✨</span></button>
+    </div>
+  </div>
+  <nav class="tabbar" id="tabbar" aria-label="Shop">
+    <button class="tab" data-shop="gen"><span class="ti">🔔</span>Features<span class="badge" id="badge-gen"></span></button>
+    <button class="tab" data-shop="up"><span class="ti">✨</span>Upgrades<span class="badge" id="badge-up"></span></button>
+    <button class="tab" data-shop="store"><span class="ti">🛍️</span>Store<span class="badge" id="badge-store"></span></button>
+    <button class="tab" data-shop="goals"><span class="ti">🎯</span>Goals<span class="badge" id="badge-goals"></span></button>
+    <button class="tab" data-shop="settings"><span class="ti">⚙️</span>Settings<span class="badge" id="badge-settings"></span></button>
+  </nav>
 </div>
 
 <div class="frenzy" id="frenzy"></div>
@@ -337,10 +445,6 @@
 </div>
 <div class="credit">Thanks Siri.</div>
 <footer class="disclaimer">Parody. Not affiliated with, endorsed by, or sponsored by Apple Inc. "Apple", "Siri" and "Apple Intelligence" are trademarks of their respective owners, used here for commentary and parody only.</footer>
-
-<div class="clickzone" id="clickzone">
-  <button class="go" id="go"><span>Hey Siri, Summarise this</span><span class="chev">✨</span></button>
-</div>
 
 <script>
 (function(){
@@ -498,8 +602,8 @@
   /* ===================== RENDER ===================== */
   var stage=$("stage"),layers=[],MAXL=6,lastPush=0;
   function makeLayer(){var d=document.createElement("div");d.className="layer";d.innerHTML='<div class="siri"><div class="head"><span class="orb"></span><span class="label">Siri Summary \u00B7 Layer '+fmtD(s.dream)+'</span></div><div class="body"></div></div>';d.querySelector(".body").textContent=s.dream.lt(CRAFTED.length)?CRAFTED[s.dream.floor().toNumber()]:generateLine();return d;}
-  function applyStack(){var n=layers.length;for(var i=0;i<n;i++){var off=n-1-i,el=layers[i];var sc=Math.max(0.5,1-0.07*off),ty=-34*off,op=off>5?0:Math.max(0,1-0.17*off),bl=Math.min(7,off*1.1);el.style.transform="translate(-50%,"+ty+"px) scale("+sc+")";el.style.opacity=op;el.style.filter="blur("+bl+"px)";el.style.zIndex=String(200-off);}}
-  function pushSummary(force){var now=Date.now();if(!force&&now-lastPush<260&&layers.length){var f=layers[layers.length-1];f.querySelector(".body").textContent=s.dream.lt(CRAFTED.length)?CRAFTED[s.dream.floor().toNumber()]:generateLine();f.querySelector(".label").textContent="Siri Summary \u00B7 Layer "+fmtD(s.dream);return;}lastPush=now;var c=makeLayer();c.style.transform="translate(-50%,16px) scale(1.12)";c.style.opacity="0";c.style.filter="blur(5px)";stage.appendChild(c);layers.push(c);requestAnimationFrame(function(){requestAnimationFrame(applyStack);});while(layers.length>MAXL){var old=layers.shift();old.style.transition="opacity .5s ease, transform .5s ease";old.style.opacity="0";(function(o){setTimeout(function(){if(o.parentNode)o.parentNode.removeChild(o);},520);})(old);}}
+  function applyStack(){var n=layers.length;for(var i=0;i<n;i++){var off=n-1-i,el=layers[i];var sc=Math.max(0.5,1-0.07*off),ty=-34*off,op=off>5?0:Math.max(0,1-0.17*off),bl=Math.min(7,off*1.1);el.style.transform="translate(-50%,calc(-50% - "+(34*off)+"px)) scale("+sc+")";el.style.opacity=op;el.style.filter="blur("+bl+"px)";el.style.zIndex=String(200-off);}}
+  function pushSummary(force){var now=Date.now();if(!force&&now-lastPush<260&&layers.length){var f=layers[layers.length-1];f.querySelector(".body").textContent=s.dream.lt(CRAFTED.length)?CRAFTED[s.dream.floor().toNumber()]:generateLine();f.querySelector(".label").textContent="Siri Summary \u00B7 Layer "+fmtD(s.dream);return;}lastPush=now;var c=makeLayer();c.style.transform="translate(-50%,calc(-50% + 16px)) scale(1.12)";c.style.opacity="0";c.style.filter="blur(5px)";stage.appendChild(c);layers.push(c);requestAnimationFrame(function(){requestAnimationFrame(applyStack);});while(layers.length>MAXL){var old=layers.shift();old.style.transition="opacity .5s ease, transform .5s ease";old.style.opacity="0";(function(o){setTimeout(function(){if(o.parentNode)o.parentNode.removeChild(o);},520);})(old);}}
   function resetStage(){stage.innerHTML="";layers=[];lastPush=0;pushSummary(true);}
 
   function buildGen(){var h="";GENS.forEach(function(x){h+='<div class="item" data-gen="'+x.id+'"><div class="ico">'+x.ico+'</div><div class="txt"><div class="nm">'+x.name+' <span class="ct" id="ct-'+x.id+'"></span></div><div class="bl">'+x.bl+' <span class="rate">+'+fmtRateD(D(x.rate))+'/s each</span></div></div><div class="cost" id="cost-'+x.id+'"></div></div>';});$("genlist").innerHTML=h;GENS.forEach(function(x){$("genlist").querySelector('[data-gen="'+x.id+'"]').addEventListener("click",function(){buyGen(x);});});}
@@ -528,6 +632,30 @@
 
   function refreshAfford(){appleProducts.forEach(function(p){if(appleOwned[p.id])return;var el=$("applelist").querySelector('[data-ap="'+p.id+'"]');if(el)el.classList.toggle("cant",s.dream.lt(p.price));});META.forEach(function(mt){if(metaLvl(mt.id)>=mt.max)return;var el=$("vaultlist").querySelector('[data-mt="'+mt.id+'"]');if(el)el.classList.toggle("cant",s.totems<mt.cost(metaLvl(mt.id)));});}
 
+  /* ---- per-section "ready" counts for the mobile tab bar ---- */
+  function setBadge(id,n){var el=$(id);if(el)el.textContent=n>0?(n>99?"99+":String(n)):"";}
+  function refreshBadges(){
+    var gc=0;GENS.forEach(function(x){if(buyCost(x,1).lte(s.dream))gc++;});
+    var uc=0;UPS.forEach(function(u){if(!owned[u.id]&&u.req()&&s.dream.gte(u.cost))uc++;});
+    if(s.lifetime.gte(1e9)&&s.dream.gte(procCost()))uc++;
+    var ac=0;appleProducts.forEach(function(p){if(!appleOwned[p.id]&&s.dream.gte(p.price))ac++;});
+    var sc=0;META.forEach(function(mt){var lv=metaLvl(mt.id);if(lv<mt.max&&s.totems>=mt.cost(lv))sc++;});
+    if(pendingTotems()>0)sc++;
+    setBadge("badge-gen",gc);setBadge("badge-up",uc);setBadge("badge-store",ac);setBadge("badge-goals",0);setBadge("badge-settings",sc);
+  }
+  /* ---- bottom-sheet: each tab shows only its own panel(s) ---- */
+  var shopSection="gen";
+  function showSection(which){
+    shopSection=which||"gen";
+    Array.prototype.forEach.call(document.querySelectorAll('.shop [data-shop]'),function(el){el.style.display=(el.getAttribute("data-shop")===shopSection)?"":"none";});
+    var bb=document.querySelector('.shop .bulkbar');if(bb)bb.style.display=(shopSection==="gen"||shopSection==="up"||shopSection==="store")?"":"none";
+    var open=document.body.classList.contains("shopopen");
+    Array.prototype.forEach.call(document.querySelectorAll('.tabbar .tab'),function(t){t.classList.toggle("on",open&&t.getAttribute("data-shop")===shopSection);});
+    var sc=$("shop");if(sc)sc.scrollTop=0;
+  }
+  function openShop(which){document.body.classList.add("shopopen");showSection(which);}
+  function closeShop(){document.body.classList.remove("shopopen");Array.prototype.forEach.call(document.querySelectorAll('.tabbar .tab'),function(t){t.classList.remove("on");});}
+
   function updateStats(){
     $("heronum").textContent=fmtD(s.dream);
     
@@ -540,13 +668,14 @@
     var pt=pendingTotems(),kb=$("kick");
     if(pt>0){kb.disabled=false;kb.textContent="Install update \u2014 "+fmtN(pt)+" token"+(pt>1?"s":"");}else{kb.disabled=true;kb.textContent="Update: summarise more first";}
     $("totem").classList.toggle("forever",s.dream.gte(100000));
+    refreshBadges();
   }
 
   function applyReality(){var r=s.kicks+1;document.documentElement.style.setProperty("--accent",PAL[(r-1)%PAL.length]);$("realitybadge").textContent="Update "+r+" \u00B7 "+RNAMES[(r-1)%RNAMES.length];}
 
   /* ===================== ACTIONS ===================== */
   function spawnFloat(txt){var f=document.createElement("div");f.className="float";f.textContent=txt;var z=$("clickzone");f.style.left=(z.clientWidth/2+(Math.random()*60-30))+"px";f.style.top="6px";z.appendChild(f);setTimeout(function(){f.remove();},1000);}
-  function tap(){var amt=perClick();s.dream=s.dream.plus(amt);s.lifetime=s.lifetime.plus(amt);s.taps++;if(s.dream.gt(s.maxDream))s.maxDream=s.dream;pushSummary(false);spawnFloat("+"+fmtRateD(amt));refreshGen();refreshUp();updateStats();}
+  function tap(){var amt=perClick();s.dream=s.dream.plus(amt);s.lifetime=s.lifetime.plus(amt);s.taps++;if(s.dream.gt(s.maxDream))s.maxDream=s.dream;pushSummary(true);spawnFloat("+"+fmtRateD(amt));refreshGen();refreshUp();updateStats();}
   function kick(){var pt=pendingTotems();if(pt<=0)return;s.totemsEarned+=pt;s.totems+=pt;s.kicks++;s.dream=startLevel();if(s.dream.gt(s.maxDream))s.maxDream=s.dream;s.paradox=false;s.distTier=0;distMul=D(1);GENS.forEach(function(x){g[x.id]=0;});owned={};recompute();applyReality();resetStage();refreshUp();refreshGen();refreshApple();refreshVault();refreshGoals();updateStats();toast("\u2699\uFE0F Update "+(s.kicks+1)+" installed. Siri still can't.");}
 
   function toast(msg){var t=document.createElement("div");t.className="toast";t.textContent=msg;document.body.appendChild(t);setTimeout(function(){t.style.transition="opacity .4s";t.style.opacity="0";},2400);setTimeout(function(){t.remove();},2900);}
@@ -554,7 +683,7 @@
   /* golden "Aga is typing" */
   var goldenEl=null,nextGolden=Date.now()+rand(25,55)*1000,goldenExpire=0;
   function rand(a,b){return a+Math.random()*(b-a);}
-  function spawnGolden(){if(goldenEl)return;var el=document.createElement("div");el.className="golden";el.innerHTML='<div class="gh"><span class="dot"></span>Someone is texting\u2026</div><div class="gb">tap before Siri summarises it for you</div>';var vw=window.innerWidth,vh=window.innerHeight;el.style.top=rand(90,Math.max(120,vh*0.55))+"px";el.style.left=vw+"px";document.body.appendChild(el);var life=(metaLvl("vivid")?13:9);el.style.transition="left "+life+"s linear";requestAnimationFrame(function(){el.style.left=(-340)+"px";});el.addEventListener("click",function(){goldenReward();el.remove();goldenEl=null;goldenExpire=0;nextGolden=Date.now()+rand(metaLvl("vivid")?14:28,metaLvl("vivid")?40:70)*1000;});goldenEl=el;goldenExpire=Date.now()+life*1000;}
+  function spawnGolden(){if(goldenEl)return;var el=document.createElement("div");el.className="golden";el.innerHTML='<div class="siri"><div class="head"><span class="orb"></span><span class="label">Someone is texting\u2026</span></div><div class="body">Tap before Siri summarises it for you.</div></div>';var vw=window.innerWidth,vh=window.innerHeight;el.style.top=rand(90,Math.max(120,vh*0.55))+"px";el.style.left=vw+"px";document.body.appendChild(el);var life=(metaLvl("vivid")?13:9);el.style.transition="left "+life+"s linear";var offLeft=-(el.offsetWidth+24);requestAnimationFrame(function(){el.style.left=offLeft+"px";});el.addEventListener("click",function(){goldenReward();el.remove();goldenEl=null;goldenExpire=0;nextGolden=Date.now()+rand(metaLvl("vivid")?14:28,metaLvl("vivid")?40:70)*1000;});goldenEl=el;goldenExpire=Date.now()+life*1000;}
   function goldenReward(){s.caught++;var r=Math.random();if(r<0.5){s.frenzyMult=7;s.frenzyUntil=Date.now()+(metaLvl("vivid")?22:15)*1000;toast("\u26A1 SUMMARY FRENZY \u00D77");}else if(r<0.8){var lump=Decimal.max(perSecBase().times(45),perClick().times(40),100);s.dream=s.dream.plus(lump);s.lifetime=s.lifetime.plus(lump);if(s.dream.gt(s.maxDream))s.maxDream=s.dream;spawnFloat("+"+fmtD(lump));toast("\uD83D\uDCB0 +"+fmtD(lump)+" summaries");}else{var surge=perClick().times(80+s.totemsEarned*6);s.dream=s.dream.plus(surge);s.lifetime=s.lifetime.plus(surge);if(s.dream.gt(s.maxDream))s.maxDream=s.dream;spawnFloat("+"+fmtD(surge));toast("\uD83C\uDF00 Siri short-circuits");}updateStats();}
 
   /* apple ads */
@@ -595,12 +724,31 @@
     setTimeout(function(){toast("\uD83D\uDCA4 Away "+fmtTime(el)+": Siri made +"+fmtD(gain)+" useless summaries");},400);}
 
   /* ===================== WIRING ===================== */
+  /* relocate the long changelog + disclaimer into the shop sheet so the main view never scrolls */
+  (function(){var shopEl=$("shop");if(!shopEl)return;var wn=document.querySelector(".whatsnew");if(wn){wn.setAttribute("data-shop","settings");shopEl.appendChild(wn);}var dis=document.querySelector(".disclaimer");if(dis){dis.setAttribute("data-shop","settings");shopEl.appendChild(dis);}showSection(shopSection);})();
+  /* reserve exactly (dock height + --gap) under the notification area, so every vertical gap matches */
+  function layoutDock(){var dock=$("dock"),main=document.querySelector(".main"),bar=$("tabbar");if(!dock||!main)return;
+    var gap=parseInt(getComputedStyle(document.documentElement).getPropertyValue("--gap"),10)||16;
+    if(bar)document.documentElement.style.setProperty("--barh",bar.offsetHeight+"px");
+    var fromBottom=window.innerHeight-dock.getBoundingClientRect().top;
+    main.style.paddingBottom=Math.max(0,fromBottom+gap)+"px";}
+  layoutDock();window.requestAnimationFrame(layoutDock);window.addEventListener("resize",layoutDock);
   $("go").addEventListener("click",tap);
   $("kick").addEventListener("click",kick);
   document.addEventListener("keydown",function(e){if(e.key==="ArrowDown"){e.preventDefault();tap();}});
   Array.prototype.forEach.call(document.querySelectorAll(".bulkbar button"),function(b){b.addEventListener("click",function(){buyAmt=b.dataset.amt==="M"?"M":parseInt(b.dataset.amt,10);Array.prototype.forEach.call(document.querySelectorAll(".bulkbar button"),function(x){x.classList.remove("on");});b.classList.add("on");refreshGen();});});
   var totem=$("totem");totem.addEventListener("click",function(){if(totem.classList.contains("forever"))return;totem.classList.add("spin");setTimeout(function(){totem.classList.remove("spin");},2600);});
-  var themebtn=$("themebtn");if(themebtn)themebtn.addEventListener("click",function(){var d=document.documentElement;if(d.getAttribute("data-theme")==="light"){d.removeAttribute("data-theme");themebtn.textContent="\uD83C\uDF19";}else{d.setAttribute("data-theme","light");themebtn.textContent="\u2600\uFE0F";}});
+  function setTheme(light){var d=document.documentElement;if(light)d.setAttribute("data-theme","light");else d.removeAttribute("data-theme");
+    var tb=$("themebtn");if(tb)tb.textContent=light?"\u2600\uFE0F":"\uD83C\uDF19";
+    var tm=$("thememode");if(tm)tm.textContent=light?"Light":"Dark";
+    var ti=document.querySelector("#themetoggle .ico");if(ti)ti.textContent=light?"\u2600\uFE0F":"\uD83C\uDF19";}
+  function toggleTheme(){setTheme(document.documentElement.getAttribute("data-theme")!=="light");}
+  var themebtn=$("themebtn");if(themebtn)themebtn.addEventListener("click",toggleTheme);
+  var themetoggle=$("themetoggle");if(themetoggle)themetoggle.addEventListener("click",toggleTheme);
+  Array.prototype.forEach.call(document.querySelectorAll(".tabbar .tab"),function(t){t.addEventListener("click",function(){openShop(t.getAttribute("data-shop"));});});
+  var sheetscrim=$("sheetscrim");if(sheetscrim)sheetscrim.addEventListener("click",closeShop);
+  var sheetclose=$("sheetclose");if(sheetclose)sheetclose.addEventListener("click",closeShop);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")closeShop();});
   var wnd=$("wndismiss");if(wnd)wnd.addEventListener("click",function(){var p=document.querySelector(".whatsnew");if(p)p.style.display="none";});
   var rb=$("resetbtn");if(rb)rb.addEventListener("click",function(){if(window.confirm("Erase your saved game and start over? This cannot be undone.")){lsDel(SAVE_KEY);location.reload();}});
 
@@ -610,6 +758,7 @@
   recompute();
   if(__sv)offlineGain(__sv);
   buildGen();refreshUp();refreshApple();refreshVault();refreshGoals();applyReality();resetStage();updateStats();
+  setTheme(document.documentElement.getAttribute("data-theme")==="light");
   Array.prototype.forEach.call(document.querySelectorAll(".bulkbar button"),function(x){var v=x.dataset.amt==="M"?"M":parseInt(x.dataset.amt,10);x.classList.toggle("on",v===buyAmt);});
 
   var shopTimer=0;
