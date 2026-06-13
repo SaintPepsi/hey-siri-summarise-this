@@ -15,7 +15,7 @@ into a proper repository.
 ## 1. What it is, in one breath
 
 - **One self-contained file:** `index.html` (~640 lines). HTML + CSS + JS in a single document.
-- **One runtime dependency:** [`decimal.js`](https://github.com/MikeMcl/decimal.js/) v10.4.3, vendored locally at `vendor/decimal.min.js` (no CDN, works offline), for arbitrary-precision big numbers.
+- **Zero external requests:** [`decimal.js`](https://github.com/MikeMcl/decimal.js/) v10.4.3 (arbitrary-precision big numbers) is **inlined directly into `index.html`** — the pinned source is kept at `vendor/decimal.min.js`. No CDN, no sibling files: the game works offline, from `file://`, and can't 403 when hosted (e.g. on itch.io).
 - **No build step.** No framework. Vanilla JS in one IIFE. Open the file and it runs.
 - **Persists** to `localStorage` with offline progress.
 - **Theme:** iOS-26-ish "Liquid Glass" look, dark mode by default with a light toggle.
@@ -41,8 +41,8 @@ python3 -m http.server 8000           # then visit http://localhost:8000
 npm run serve                         # same thing, via package.json
 ```
 
-No network is required — `decimal.js` is vendored at `vendor/decimal.min.js`, so the game runs
-fully offline.
+No network is required — `decimal.js` is inlined into `index.html`, so the game runs
+fully offline (even straight from `file://`).
 
 ### Run the tests
 ```bash
@@ -348,17 +348,25 @@ offline progress is credited; bulk-buy `maxBuy` never overspends.
 
 ## 9. The vendored dependency
 
-`decimal.js` v10.4.3 is **vendored** at `vendor/decimal.min.js` and loaded via a relative
-`<script src>` in `index.html`. There is no longer any CDN request, so the game works fully
-offline and can't break if cdnjs is unreachable. The version is pinned (10.4.3, matching the
-`devDependencies` in `package.json`) and the `typeof Decimal === "undefined"` guard is retained.
+`decimal.js` v10.4.3 is **inlined directly into `index.html`** (in a `<script id="decimal-lib">`
+block in `<head>`), making the file a single, truly self-contained document: no CDN request, no
+sibling files, works offline and from `file://`, and — importantly for hosts like itch.io that
+serve uploads from a CDN — nothing that can return a 404/403 and leave `Decimal` undefined. The
+version is pinned (10.4.3, matching the `devDependencies` in `package.json`) and the
+`typeof Decimal === "undefined"` guard is retained as defensive insurance.
 
-To update the library later, replace `vendor/decimal.min.js` with a new pinned version
-(from https://github.com/MikeMcl/decimal.js), bump the version in `package.json`, and re-run
-`npm test`.
+The pinned minified source is kept at `vendor/decimal.min.js`. To update the library later:
+replace that file with a new pinned version (from https://github.com/MikeMcl/decimal.js), bump
+the version in `package.json`, re-inline it, then re-run `npm test`:
 
-> Alternative for "download and double-click" distribution: inline the minified library directly
-> into a `<script>` tag in `<head>` to make `index.html` a single truly self-contained file.
+```bash
+# re-inline vendor/decimal.min.js into the <script id="decimal-lib"> block of index.html
+node -e 'const fs=require("fs");const lib=fs.readFileSync("vendor/decimal.min.js","utf8");let h=fs.readFileSync("index.html","utf8");h=h.replace(/(<script id="decimal-lib">)[\s\S]*?(<\/script>)/,(m,a,b)=>a+lib+b);fs.writeFileSync("index.html",h)'
+npm test
+```
+
+> The jsdom test harness (`test/harness.mjs`) strips this `<script id="decimal-lib">` block and
+> injects `Decimal` from the npm package instead, so tests never execute the minified bundle.
 
 ---
 

@@ -1,0 +1,38 @@
+<!doctype html>
+<!-- itch.io BANNER — shot at 960×320 (itch replaces the page title with this image).
+     Palette + Siri orb + title lockup lifted from index.html. -->
+<html lang="en"><head><meta charset="utf-8"><style>
+  :root{ --bg:#06070b; --ink:#f5f5f7; --ink-dim:#a1a1a6; --blue:#0a84ff; --accent:#9d80ff; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:960px;height:320px;overflow:hidden}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",sans-serif;
+    background:var(--bg); color:var(--ink); position:relative;
+    display:flex; align-items:center; gap:40px; padding:0 56px;
+    -webkit-font-smoothing:antialiased;
+  }
+  .glow::before,.glow::after{content:"";position:absolute;border-radius:50%;filter:blur(6px);opacity:.5}
+  .glow::before{width:300px;height:300px;left:-80px;top:-120px;background:radial-gradient(circle at 30% 30%,#cdbcff,transparent 70%)}
+  .glow::after{width:280px;height:280px;right:-80px;bottom:-130px;background:radial-gradient(circle at 60% 60%,#a9d6ff,transparent 70%)}
+  .orb{position:relative;flex:0 0 auto;width:140px;height:140px;border-radius:50%;
+    background:conic-gradient(from 210deg,#16c8ff,#7c5cff,#ff5db0,#16c8ff);
+    box-shadow:0 0 50px rgba(124,92,255,.55);z-index:1}
+  .orb::after{content:"";position:absolute;inset:9px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),transparent 60%)}
+  .lock{z-index:1}
+  .eyebrow{font-size:16px;font-weight:600;color:var(--ink-dim);margin-bottom:6px}
+  h1{font-size:52px;font-weight:800;letter-spacing:-.02em;line-height:1.02}
+  h1 .spark{color:var(--accent)}
+  .sub{font-size:28px;font-weight:800;color:var(--accent);letter-spacing:-.01em;margin-top:6px}
+  .tag{margin-top:14px;font-size:18px;color:var(--ink-dim);max-width:52ch;line-height:1.35}
+  .tag em{color:var(--blue);font-style:normal;font-weight:600}
+</style></head>
+<body class="glow">
+  <div class="orb"></div>
+  <div class="lock">
+    <div class="eyebrow">Apple Intelligence™ · summarising for you</div>
+    <h1>Hey Siri, Summarise this <span class="spark">✨</span></h1>
+    <div class="sub">The Idle Game</div>
+    <div class="tag">Tap to make Siri summarise the summary. It does <em>not</em> get better — that's the joke.</div>
+  </div>
+</body></html>

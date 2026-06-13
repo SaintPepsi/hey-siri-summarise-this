@@ -1,6 +1,6 @@
 // jsdom boot harness for the single-file game.
-// Strips the vendored <script src> and injects Decimal directly, so tests
-// run without a network and without executing the minified lib through jsdom.
+// Strips the inlined decimal.js <script> and injects Decimal directly, so tests
+// run without executing the minified lib through jsdom.
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -12,7 +12,7 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export function boot({ test = false, seed = null } = {}) {
   const html = fs
     .readFileSync(path.join(root, 'index.html'), 'utf8')
-    .replace(/<script src="vendor\/decimal\.min\.js"><\/script>\s*/g, '');
+    .replace(/<script id="decimal-lib">[\s\S]*?<\/script>\s*/g, '');
 
   const errors = [];
   const vc = new VirtualConsole();

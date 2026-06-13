@@ -1,0 +1,14 @@
+<!doctype html>
+<!-- Favicon / app icon — the Siri orb from the cover, rendered on a transparent
+     background. Shot square (128×128) and inlined into index.html as the favicon. -->
+<html lang="en"><head><meta charset="utf-8"><style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:128px;height:128px;background:transparent}
+  body{display:flex;align-items:center;justify-content:center}
+  /* identical orb treatment to cover.html / the in-game .orb */
+  .orb{position:relative;width:116px;height:116px;border-radius:50%;
+    background:conic-gradient(from 210deg,#16c8ff,#7c5cff,#ff5db0,#16c8ff)}
+  .orb::after{content:"";position:absolute;inset:8px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.95),transparent 60%)}
+</style></head>
+<body><div class="orb"></div></body></html>

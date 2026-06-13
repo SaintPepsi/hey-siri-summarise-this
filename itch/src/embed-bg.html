@@ -1,0 +1,14 @@
+<!doctype html>
+<!-- itch.io EMBED BACKGROUND — shot at 1280×720. Sits behind the playable HTML5
+     iframe. Flat near-black with one faint central glow so the game frame pops.
+     (Alternatively skip this image and set embed bg to a flat #06070b in the form.) -->
+<html lang="en"><head><meta charset="utf-8"><style>
+  :root{ --bg:#06070b; }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html,body{width:1280px;height:720px;overflow:hidden}
+  body{background:var(--bg);position:relative}
+  .blob{position:absolute;border-radius:50%;filter:blur(24px)}
+  .c{width:600px;height:600px;left:50%;top:50%;transform:translate(-50%,-50%);opacity:.16;
+     background:radial-gradient(circle,#7c5cff,transparent 70%)}
+</style></head>
+<body><div class="blob c"></div></body></html>
