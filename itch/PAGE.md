@@ -30,7 +30,7 @@ giveaway of an unstyled page.
 | Button (More options) | `#9d80ff` | Siri-orb purple `--accent` (`index.html:16`) |
 | Font | **Lato** | closest neutral itch font to the game's SF Pro stack (`index.html:28`) |
 | Size | **Large** | the game's UI is chunky / big-number; large reads as intentional |
-| Screenshot display | **Auto** | dark theme; the sidebar strip doesn't clash |
+| Screenshot display | **Auto** | dark theme matches the app's default look |
 
 ---
 
@@ -60,15 +60,15 @@ cards / gameplay montage / one continuous take), length, and audio, and I'll bui
 
 ## 4. Screenshots (upload 3–5, in this order)
 
-Order = action first, core loop, distinctive feature, title last. Regenerate with:
+Order = action first, core loop, distinctive feature, title last. Captured in **portrait** (the UI
+is now a centred, viewport-locked app shell). Regenerate with:
 ```bash
-npm run serve &             # http://localhost:8000
-bun itch/screenshots.ts     # writes shot-1..4 png
+node itch/screenshots.ts    # (or: bun) loads index.html via file://, writes shot-1..4 png
 ```
 
-1. `itch/shot-2-tapping.png` — **action**: numbers climbing, Siri summary + ad toast mid-play
-2. `itch/shot-3-upgrades.png` — **the loop hook**: the model-upgrades / Apple Intelligence panel
-3. `itch/shot-4-light.png` — **distinctive feature**: the iOS "Liquid Glass" light-mode toggle
+1. `itch/shot-2-tapping.png` — **action**: numbers climbing, summaries stacking, the Features badge lighting up
+2. `itch/shot-3-upgrades.png` — **the loop hook**: the shop sheet open on Apple Intelligence features (generators)
+3. `itch/shot-4-light.png` — **distinctive feature**: light mode, toggled from Settings (the iOS "Liquid Glass" look)
 4. `itch/shot-1-title.png` — **title / hero** state, last
 
 ---
@@ -84,10 +84,11 @@ bun itch/screenshots.ts     # writes shot-1..4 png
   ```
   Then tick **"This file will be played in the browser."**
 - **Embed options:**
-  - Viewport: **1280 × 800** (the layout is responsive; this fits the two-column view)
+  - Viewport: **480 × 854** (portrait) — the UI is a centred, viewport-locked app shell that
+    fills any size; portrait suits the one-screen layout, landscape just centres it
   - **Enable "Click to launch in fullscreen"** — the big-number UI benefits from space
-  - **Mobile friendly:** on (orientation: default) — the layout already reflows narrow
-  - Scrollbars: on (the upgrade list runs long)
+  - **Mobile friendly:** on (orientation: default) — it's now a single-screen app at any width
+  - Scrollbars: off — the page itself never scrolls; only the shop sheet scrolls internally
   - Automatically start on page load: optional (off keeps the cover visible first)
 - **Pricing:** **No payments ($0) — keep it free.** Non-commercial parody is far safer
   legally than anything sold or "name-your-price". Don't monetise this one.
@@ -153,7 +154,7 @@ bun itch/screenshots.ts     # writes shot-1..4 png
 itch/
 ├── PAGE.md                     ← this file
 ├── generate.ts                 ← bun itch/generate.ts → the 4 page images
-├── screenshots.ts              ← bun itch/screenshots.ts → shot-1..4 (needs npm run serve)
+├── screenshots.ts              ← node itch/screenshots.ts → shot-1..4 (loads via file://)
 ├── src/{cover,banner,background,embed-bg}.html
 ├── cover-630x500.png
 ├── banner-960x320.png
