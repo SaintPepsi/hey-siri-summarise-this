@@ -8,7 +8,7 @@
 <script src="vendor/decimal.min.js"></script>
 <style>
     :root{
-    --bg:#06070b; --ink:#f5f5f7; --ink-dim:#a1a1a6; --ink-faint:#6b6b73;
+    --bg:#06070b; --ink:#f5f5f7; --ink-dim:#a1a1a6; --ink-faint:#8e8e93; /* faint lifted #6b6b73→#8e8e93 for WCAG AA (3.4→5.4:1) on glass panels */
     --glass:rgba(255,255,255,.07); --glass-solid:rgba(28,28,34,.82);
     --hairline:rgba(255,255,255,.09); --highlight:rgba(255,255,255,.16);
     --pill:rgba(255,255,255,.13); --pill-hi:rgba(255,255,255,.22); --seg-on:rgba(255,255,255,.22);
@@ -16,7 +16,7 @@
     --accent:#9d80ff; --shadow:0 14px 40px rgba(0,0,0,.55);
   }
   html[data-theme="light"]{
-    --bg:#eef0f5; --ink:#1d1d1f; --ink-dim:#6e6e73; --ink-faint:#9b9ba1;
+    --bg:#eef0f5; --ink:#1d1d1f; --ink-dim:#5e5e63; --ink-faint:#6f6f75; /* dim #6e6e73→#5e5e63, faint #9b9ba1→#6f6f75 for WCAG AA (2.6→4.7:1) */
     --glass:rgba(255,255,255,.62); --glass-solid:rgba(255,255,255,.82);
     --hairline:rgba(0,0,0,.07); --highlight:rgba(255,255,255,.85);
     --pill:rgba(118,118,128,.14); --pill-hi:rgba(118,118,128,.22); --seg-on:#fff;
