@@ -1,3 +1,6 @@
 node_modules/
 .DS_Store
 *.log
+
+# regenerable itch upload bundle (rebuild: zip -j itch/itch-build.zip index.html LICENSE)
+itch/itch-build.zip

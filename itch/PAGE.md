@@ -76,9 +76,11 @@ bun itch/screenshots.ts     # writes shot-1..4 png
 ## 5. Upload & embed settings (it's a browser game)
 
 - **Kind of project:** HTML
-- **Upload:** zip the playable files with `index.html` at the zip root:
+- **Upload:** `index.html` is now a **true single self-contained file** (decimal.js is inlined),
+  so the zip only needs the one file — there is no `vendor/` dependency to forget, which is what
+  previously 404/403'd on itch's CDN and left the game blank.
   ```bash
-  zip -r itch-build.zip index.html vendor LICENSE
+  zip -j itch-build.zip index.html LICENSE   # index.html MUST be at the zip root
   ```
   Then tick **"This file will be played in the browser."**
 - **Embed options:**
