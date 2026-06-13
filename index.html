@@ -28,7 +28,8 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","SF Pro Display","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    color:var(--ink); background:var(--bg); position:relative; -webkit-font-smoothing:antialiased; overflow:hidden}
+    color:var(--ink); background:var(--bg); position:relative; -webkit-font-smoothing:antialiased; overflow:hidden;
+    -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent}
   /* ambient colour so the glass has something to refract */
   .glow{position:fixed;inset:0;z-index:0;pointer-events:none}
   .glow::before,.glow::after{content:"";position:absolute;border-radius:50%;filter:blur(120px);opacity:.55}
@@ -185,7 +186,7 @@
   .adtoast .no{background:var(--pill);color:var(--ink-dim)}
   @keyframes slidein{from{transform:translateX(120%);opacity:0}to{transform:translateX(0);opacity:1}}
 
-  .toast{position:fixed;left:50%;bottom:108px;transform:translateX(-50%);z-index:58;max-width:88vw;text-align:center;
+  .toast{position:fixed;left:50%;bottom:108px;transform:translateX(-50%);z-index:58;width:max-content;max-width:88vw;text-align:center;
     background:var(--glass-solid);backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);
     border:.5px solid var(--highlight);color:var(--ink);font-size:13px;font-weight:600;
     padding:11px 18px;border-radius:999px;box-shadow:0 14px 34px rgba(20,24,60,.22);animation:goldpop .25s ease}
@@ -269,22 +270,25 @@
   .shop{position:fixed;left:0;right:0;z-index:50;overflow-y:auto;gap:14px;
     bottom:calc(2*var(--gap) + env(safe-area-inset-bottom,0) + var(--barh,56px));
     max-height:calc(100dvh - var(--barh,56px) - 96px);
-    padding:0 14px 16px;
+    padding:0 8px 16px;
     background:var(--glass-solid);backdrop-filter:blur(34px) saturate(180%);-webkit-backdrop-filter:blur(34px) saturate(180%);
     border:.5px solid var(--highlight);border-radius:26px;box-shadow:0 20px 60px rgba(0,0,0,.5);
-    transform:translateY(120%);transition:transform .38s cubic-bezier(.22,.61,.18,1)}
+    transform:translateY(calc(100% + var(--barh,56px) + 3*var(--gap) + env(safe-area-inset-bottom,0)));transition:transform .38s cubic-bezier(.22,.61,.18,1)}
   body.shopopen .shop{transform:translateY(0)}
   .sheethead{display:flex;flex-direction:column;align-items:stretch;position:sticky;top:0;z-index:3;
-    background:linear-gradient(var(--glass-solid),var(--glass-solid) 72%,transparent);padding:0 4px 6px}
+    background:var(--glass-solid);backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);
+    border-bottom:.5px solid var(--hairline);padding:0 4px 8px}
   .sheethead .grab{width:42px;height:5px;border-radius:3px;background:var(--ink-faint);opacity:.5;margin:10px auto 8px}
   .sheethead .hrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 6px}
   .sheethead h2{font-size:19px;font-weight:800;color:var(--ink)}
+  .sheethead .bulkbar{margin-top:8px}   /* half-gap between title and Buy control */
   .sheetclose{border:none;background:var(--pill);color:var(--ink);border-radius:999px;width:34px;height:34px;font-size:16px;cursor:pointer}
+  .shop>*{flex-shrink:0}   /* keep panels natural height so the sheet overflows & scrolls */
   .shop .bulkbar{padding:2px 6px}
   .shop .whatsnew,.shop .disclaimer{margin:0}   /* relocated into the sheet */
 
   @media(min-width:600px){
-    .shop{left:50%;right:auto;width:min(560px,94%);transform:translateX(-50%) translateY(120%)}
+    .shop{left:50%;right:auto;width:min(560px,94%);transform:translateX(-50%) translateY(calc(100% + var(--barh,56px) + 3*var(--gap) + env(safe-area-inset-bottom,0)))}
     body.shopopen .shop{transform:translateX(-50%) translateY(0)}
   }
 
@@ -344,6 +348,16 @@
     <div class="panel whatsnew">
       <h2>What's New <button class="dismiss" id="wndismiss" title="Dismiss">Dismiss</button></h2>
       <div class="ver">
+        <div class="vh"><span class="vn">Version 7.0 — One-Handed</span><span class="vd">13 Jun</span></div>
+        <ul>
+          <li>Rebuilt as a single screen that fits any phone and never scrolls. You can no longer scroll away from the summaries. We are calling this an improvement.</li>
+          <li>Features, Upgrades, Store and Goals now live in a tab bar at the bottom — each opens its own panel, with a little red badge counting everything you could be buying instead of reading your texts.</li>
+          <li>Notification summaries are perfectly centred now. A brand-new one appears on every tap, because quietly editing the old summary wasn't wasteful enough.</li>
+          <li>Light/Dark moved into Settings, where you will never look. The "someone is texting" alert is now a proper notification that glides past fully legible — and equally useless.</li>
+          <li>Settings token upgrades now stack forever, each level worth logarithmically less and costing dramatically more — self-improvement with diminishing returns, finally simulated accurately. New upgrades unlock the more updates you install, including Neural Overclock for the truly committed.</li>
+        </ul>
+      </div>
+      <div class="ver">
         <div class="vh"><span class="vn">Version 6.1 — Legibility</span><span class="vd">13 Jun</span></div>
         <ul>
           <li>Made the summaries you couldn't read more readable. They're still pointless — now you can see that clearly.</li>
@@ -395,14 +409,14 @@
   <div class="shop" id="shop">
     <div class="sheethead">
       <div class="grab"></div>
-      <div class="hrow"><h2>Shop</h2><button class="sheetclose" id="sheetclose" title="Close" aria-label="Close shop">✕</button></div>
-    </div>
-    <div class="bulkbar"><span>Buy</span>
-      <span class="seg">
-        <button data-amt="1" class="on">×1</button>
-        <button data-amt="10">×10</button>
-        <button data-amt="M">Max</button>
-      </span>
+      <div class="hrow"><h2 id="shoptitle">Shop</h2><button class="sheetclose" id="sheetclose" title="Close" aria-label="Close shop">✕</button></div>
+      <div class="bulkbar"><span>Buy</span>
+        <span class="seg">
+          <button data-amt="1" class="on">×1</button>
+          <button data-amt="10">×10</button>
+          <button data-amt="M">Max</button>
+        </span>
+      </div>
     </div>
     <div class="panel" data-shop="gen"><h2>Apple Intelligence · summarising for you</h2><div class="list" id="genlist"></div></div>
     <div class="panel" data-shop="up"><h2>Model Upgrades · allegedly better</h2><div class="list" id="uplist"></div></div>
@@ -523,12 +537,26 @@
   ];
   var PRICEF=140; // price multiplier between Apple Store generations
   // Limbo Vault — totem tech tree (persists through kicks)
+  // Settings tokens \u2014 infinitely stackable, value degrades logarithmically, cost ramps hard,
+  // and more of the tree unlocks the more updates (resets) you install.
   var META=[
-    {id:"reflex",ico:"\u23F1\uFE0F",name:"Auto-Summarise",max:99,bl:function(l){return "Auto-requests "+l+"/s. Next: "+(l+1)+"/s.";},cost:function(l){return Math.ceil(Math.pow(1.55,l));}},
-    {id:"lucid",ico:"\uD83C\uDF05",name:"Restore from Backup",max:99,bl:function(l){return l?("Begin each update with "+fmtD(startLevel())+" summaries. Next: \u00D710."):"Begin each update with 10,000 summaries.";},cost:function(l){return Math.ceil(2*Math.pow(1.9,l));}},
-    {id:"cheap",ico:"\uD83E\uDDE9",name:"Volume Licensing",max:8,bl:function(l){return "Apple Intelligence features cost "+(l*8)+"% less. Next: "+((l+1)*8)+"%.";},cost:function(l){return Math.ceil(3*Math.pow(2,l));}},
-    {id:"heavy",ico:"\u2696\uFE0F",name:"Bigger Tokens",max:50,bl:function(l){return "Each token worth "+(2+l)+"%. Next: "+(3+l)+"%.";},cost:function(l){return Math.ceil(5*Math.pow(1.8,l));}},
-    {id:"vivid",ico:"\u2728",name:"Push Notifications",max:1,bl:function(){return "Notifications arrive twice as often. Frenzies last longer.";},cost:function(){return 8;}}
+    {id:"heavy",ico:"\u2696\uFE0F",name:"Bigger Tokens",max:Infinity,req:function(){return true;},
+      bl:function(l){return "Each token worth "+heavyPct(l)+"%. Next: "+heavyPct(l+1)+"%.";},
+      cost:function(l){return Math.ceil(4*Math.pow(2.2,l));}},
+    {id:"reflex",ico:"\u23F1\uFE0F",name:"Auto-Summarise",max:Infinity,req:function(){return true;},
+      bl:function(l){return "Auto-requests "+(Math.round(reflexRate(l)*10)/10)+"/s. Next: "+(Math.round(reflexRate(l+1)*10)/10)+"/s.";},
+      cost:function(l){return Math.ceil(3*Math.pow(2.3,l));}},
+    {id:"cheap",ico:"\uD83E\uDDE9",name:"Volume Licensing",max:Infinity,req:function(){return s.kicks>=1;},
+      bl:function(l){return "Apple Intelligence features cost "+cheapPct(l)+"% less. Next: "+cheapPct(l+1)+"%.";},
+      cost:function(l){return Math.ceil(5*Math.pow(2.3,l));}},
+    {id:"lucid",ico:"\uD83C\uDF05",name:"Restore from Backup",max:Infinity,req:function(){return s.kicks>=2;},
+      bl:function(l){return l?("Begin each update with "+fmtD(startLevelAt(l))+" summaries. Next: "+fmtD(startLevelAt(l+1))+"."):"Begin each update with "+fmtD(startLevelAt(1))+" summaries.";},
+      cost:function(l){return Math.ceil(8*Math.pow(2.5,l));}},
+    {id:"vivid",ico:"\u2728",name:"Push Notifications",max:1,req:function(){return s.kicks>=3;},
+      bl:function(){return "Notifications arrive twice as often. Frenzies last longer.";},cost:function(){return 12;}},
+    {id:"overclock",ico:"\uD83E\uDDE0",name:"Neural Overclock",max:Infinity,req:function(){return s.kicks>=5;},
+      bl:function(l){return "Everything \u00D7"+fmtD(vaultAllMult(l))+". Next: \u00D7"+fmtD(vaultAllMult(l+1))+".";},
+      cost:function(l){return Math.ceil(40*Math.pow(2.7,l));}}
   ];
   var ACH=[
     {id:"a1",name:"Restate the obvious",bl:"Produce 1,000 summaries.",test:function(){return s.maxDream.gte(1000);},boost:function(){m.all=m.all.times(1.05);},btxt:"+5% everything"},
@@ -566,15 +594,23 @@
   function anyGen(){var t=0;GENS.forEach(function(x){t+=g[x.id];});return t;}
   function appleCount(){var c=0;APPLE_ARCH.forEach(function(p){if(appleOwned[p.id])c++;});return c;}
   function metaLvl(id){return metaOwned[id]||0;}
-  function totemMult(){return D(1).plus(D(0.02+0.01*metaLvl("heavy")).times(s.totemsEarned));}
-  function cheapFactor(){return Math.max(0.2,1-0.08*metaLvl("cheap"));}
+  /* token (vault) upgrades stack infinitely; each level's value degrades logarithmically */
+  function reflexRate(l){return l>0?2*Math.log2(1+l):0;}                 // auto-requests / second
+  function heavyPctFrac(l){return 0.02+0.02*Math.log2(1+l);}             // token worth, as a fraction
+  function heavyPct(l){return Math.round(heavyPctFrac(l)*1000)/10;}
+  function cheapFactorAt(l){return 0.2+0.8/(1+0.25*l);}                  // feature-cost multiplier, →0.2 floor
+  function cheapPct(l){return Math.round((1-cheapFactorAt(l))*100);}
+  function startLevelAt(l){return D(10).pow(3+Math.log2(1+l));}          // per-update head start
+  function vaultAllMult(l){return D(1).plus(0.5*Math.log2(1+l));}        // Neural Overclock: ×everything
+  function totemMult(){return D(1).plus(D(heavyPctFrac(metaLvl("heavy"))).times(s.totemsEarned));}
+  function cheapFactor(){return cheapFactorAt(metaLvl("cheap"));}
   function frenzyFactor(){return Date.now()<s.frenzyUntil?s.frenzyMult:1;}
-  function startLevel(){var l=metaLvl("lucid");return l>0?D(10).pow(3+l):D(0);}
+  function startLevel(){var l=metaLvl("lucid");return l>0?startLevelAt(l):D(0);}
 
   function recompute(){
     m={click:D(1),all:D(1),perGen:{}}; s.paradox=false;
     UPS.forEach(function(u){if(owned[u.id])u.apply();});
-    m.all=m.all.times(distMul).times(appAll).times(milestoneMul);
+    m.all=m.all.times(distMul).times(appAll).times(milestoneMul).times(vaultAllMult(metaLvl("overclock")));
     ACH.forEach(function(a){if(achDone[a.id])a.boost();});
   }
   function perSecBase(){var b=D(0);GENS.forEach(function(x){b=b.plus(D(g[x.id]).times(x.rate).times(m.perGen[x.id]||D(1)));});return b.times(m.all).times(totemMult());}
@@ -622,7 +658,7 @@
   function buyApple(p){if(appleOwned[p.id]||s.dream.lt(p.price))return;s.dream=s.dream.minus(p.price);appleOwned[p.id]=true;appAll=appAll.times(p.boost);recompute();if(appleCount()>=APPLE_ARCH.length){appleRelaunch();}else{refreshApple();}updateStats();toast("\uD83D\uDED2 "+p.name+(p.arch.id==="cloth"?" \u2014 it's a cloth":" \u2014 thank you"));}
   function appleRelaunch(){s.appleGen++;appleOwned={};genApple();refreshApple();toast("\uD83C\uDF89 Apple Store relaunches \u2014 Generation "+s.appleGen+"!");}
 
-  function refreshVault(){var h="";META.forEach(function(mt){var lv=metaLvl(mt.id),maxed=lv>=mt.max,cost=mt.cost(lv);h+='<div class="item vaultitem'+(maxed?" done":"")+'" data-mt="'+mt.id+'"><div class="ico">'+mt.ico+'</div><div class="txt"><div class="nm">'+mt.name+' <span class="ct">lv '+lv+(mt.max<50?"/"+mt.max:"")+'</span></div><div class="bl">'+mt.bl(lv)+'</div></div><div class="cost">'+(maxed?"MAX":fmtN(cost)+'<small>tokens</small>')+'</div></div>';});$("vaultlist").innerHTML=h;META.forEach(function(mt){if(metaLvl(mt.id)>=mt.max)return;var el=$("vaultlist").querySelector('[data-mt="'+mt.id+'"]');el.classList.toggle("cant",s.totems<mt.cost(metaLvl(mt.id)));el.addEventListener("click",function(){buyMeta(mt);});});}
+  function refreshVault(){var h="";META.forEach(function(mt){if(mt.req&&!mt.req()&&metaLvl(mt.id)===0)return;var lv=metaLvl(mt.id),maxed=lv>=mt.max,cost=mt.cost(lv);h+='<div class="item vaultitem'+(maxed?" done":"")+'" data-mt="'+mt.id+'"><div class="ico">'+mt.ico+'</div><div class="txt"><div class="nm">'+mt.name+' <span class="ct">lv '+lv+(mt.max<50?"/"+mt.max:"")+'</span></div><div class="bl">'+mt.bl(lv)+'</div></div><div class="cost">'+(maxed?"MAX":fmtN(cost)+'<small>tokens</small>')+'</div></div>';});$("vaultlist").innerHTML=h;META.forEach(function(mt){if(metaLvl(mt.id)>=mt.max)return;var el=$("vaultlist").querySelector('[data-mt="'+mt.id+'"]');if(!el)return;el.classList.toggle("cant",s.totems<mt.cost(metaLvl(mt.id)));el.addEventListener("click",function(){buyMeta(mt);});});}
   function buyMeta(mt){var lv=metaLvl(mt.id);if(lv>=mt.max)return;var cost=mt.cost(lv);if(s.totems<cost)return;s.totems-=cost;metaOwned[mt.id]=lv+1;refreshVault();refreshGen();updateStats();}
 
   function refreshGoals(){var tgt=milestoneTarget();var h='<div class="item proc" style="cursor:default"><div class="ico">\uD83C\uDFAF</div><div class="txt"><div class="nm">Milestone '+(s.msTier+1)+'</div><div class="bl">Produce '+fmtD(tgt)+' summaries. <span class="rate">+25% everything, forever</span></div></div><div class="cost">'+'\u00D7'+fmtD(milestoneMul)+'</div></div>';ACH.forEach(function(a){var done=achDone[a.id];h+='<div class="item'+(done?" done":"")+'" style="cursor:default"><div class="ico">'+(done?"\uD83C\uDFC6":"\uD83D\uDD12")+'</div><div class="txt"><div class="nm">'+a.name+'</div><div class="bl">'+a.bl+' <span class="rate">'+a.btxt+'</span></div></div><div class="cost">'+(done?"\u2713":"")+'</div></div>';});$("goallist").innerHTML=h;}
@@ -639,14 +675,16 @@
     var uc=0;UPS.forEach(function(u){if(!owned[u.id]&&u.req()&&s.dream.gte(u.cost))uc++;});
     if(s.lifetime.gte(1e9)&&s.dream.gte(procCost()))uc++;
     var ac=0;appleProducts.forEach(function(p){if(!appleOwned[p.id]&&s.dream.gte(p.price))ac++;});
-    var sc=0;META.forEach(function(mt){var lv=metaLvl(mt.id);if(lv<mt.max&&s.totems>=mt.cost(lv))sc++;});
+    var sc=0;META.forEach(function(mt){if(mt.req&&!mt.req()&&metaLvl(mt.id)===0)return;var lv=metaLvl(mt.id);if(lv<mt.max&&s.totems>=mt.cost(lv))sc++;});
     if(pendingTotems()>0)sc++;
     setBadge("badge-gen",gc);setBadge("badge-up",uc);setBadge("badge-store",ac);setBadge("badge-goals",0);setBadge("badge-settings",sc);
   }
   /* ---- bottom-sheet: each tab shows only its own panel(s) ---- */
   var shopSection="gen";
+  var SHOP_TITLES={gen:"Features",up:"Upgrades",store:"Store",goals:"Goals",settings:"Settings"};
   function showSection(which){
     shopSection=which||"gen";
+    var ttl=$("shoptitle");if(ttl)ttl.textContent=SHOP_TITLES[shopSection]||"Shop";
     Array.prototype.forEach.call(document.querySelectorAll('.shop [data-shop]'),function(el){el.style.display=(el.getAttribute("data-shop")===shopSection)?"":"none";});
     var bb=document.querySelector('.shop .bulkbar');if(bb)bb.style.display=(shopSection==="gen"||shopSection==="up"||shopSection==="store")?"":"none";
     var open=document.body.classList.contains("shopopen");
@@ -718,7 +756,7 @@
   }catch(e){}}
   function fmtTime(sec){sec=Math.floor(sec);var hh=Math.floor(sec/3600),mm=Math.floor((sec%3600)/60);if(hh>0)return hh+"h "+mm+"m";if(mm>0)return mm+"m";return sec+"s";}
   function offlineGain(o){if(!o||!o.t)return;var el=(Date.now()-o.t)/1000;if(el<60)return;var cap=12*3600;if(el>cap)el=cap;
-    var per=perSecBase();var at=metaLvl("reflex");if(at>0)per=per.plus(perClick().times(at));
+    var per=perSecBase();var at=reflexRate(metaLvl("reflex"));if(at>0)per=per.plus(perClick().times(at));
     if(per.lte(0))return;var gain=per.times(Math.floor(el));if(gain.lt(1))return;
     s.dream=s.dream.plus(gain);s.lifetime=s.lifetime.plus(gain);if(s.dream.gt(s.maxDream))s.maxDream=s.dream;
     setTimeout(function(){toast("\uD83D\uDCA4 Away "+fmtTime(el)+": Siri made +"+fmtD(gain)+" useless summaries");},400);}
@@ -766,7 +804,7 @@
     var now=Date.now();
     var ps=perSecond();
     if(ps.gt(0)){var add=ps.div(10);s.dream=s.dream.plus(add);s.lifetime=s.lifetime.plus(add);}
-    var at=metaLvl("reflex");
+    var at=reflexRate(metaLvl("reflex"));
     if(at>0){var a=perClick().times(at).div(10);s.dream=s.dream.plus(a);s.lifetime=s.lifetime.plus(a);s.taps+=at/10;}
     if(s.dream.gt(s.maxDream))s.maxDream=s.dream;
     var fb=$("frenzy");
