@@ -14,6 +14,7 @@ const ASSETS: Asset[] = [
   { src: "banner.html",     out: "banner-960x320.png",       w: 960,  h: 320 },
   { src: "background.html", out: "background-1920x1080.png",  w: 1920, h: 1080 },
   { src: "embed-bg.html",   out: "embed-bg-1280x720.png",    w: 1280, h: 720 },
+  { src: "devlog-cover.html", out: "devlog-7.0-cover-1280x720.png", w: 1280, h: 720 },
   // the cover Siri orb on transparent bg — also inlined into index.html as the favicon
   { src: "favicon.html",    out: "favicon-128.png",          w: 128,  h: 128, transparent: true },
 ];
