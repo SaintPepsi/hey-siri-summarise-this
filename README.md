@@ -1,6 +1,6 @@
 # Hey Siri, Summarise this — The Idle Game
 
-[![100% AI generated](https://img.shields.io/badge/100%25_AI_generated-Fable_5-d97757?logo=claude&logoColor=white)](https://claude.com/claude-code)
+[![100% AI generated](https://img.shields.io/badge/100%25_AI_generated-Fable_5%2FOpus_4.8-d97757?logo=claude&logoColor=white)](https://claude.com/claude-code)
 
 A satirical incremental ("idle clicker") game about how useless Apple Intelligence / Siri
 summaries are. You tap **"Hey Siri, Summarise this"**; Siri restates things you can already
