@@ -1,20 +1,25 @@
-# Apple Intelligence™ — The Idle Game
+# Hey Siri, Summarise this — The Idle Game
 
 [![100% AI generated](https://img.shields.io/badge/100%25_AI_generated-Fable_5-d97757?logo=claude&logoColor=white)](https://claude.com/claude-code)
 
 A satirical incremental ("idle clicker") game about how useless Apple Intelligence / Siri
 summaries are. You tap **"Hey Siri, Summarise this"**; Siri restates things you can already
 see, then summarises the summary, forever. Numbers go up into the decillions. It never gets
-better — that's the joke.
+better — that's the joke. (The in-app title is still **Apple Intelligence™ — Idle Edition**.)
 
-This document is a full handoff for moving the project from a single hand-built HTML file
-into a proper repository.
+**Live:**
+- ▶ Play — https://summarise.ianhogers.com (GitHub Pages) · https://sancoca.itch.io/hey-siri-summarise-this (itch.io)
+- ⌨ Source — https://github.com/saintpepsi/hey-siri-summarise-this
+
+This README is a full handoff for the single-file build. The `itch/` folder holds a complete
+itch.io page kit (theme, page images, screenshots, and a `PAGE.md` with every dashboard field
+pre-filled) — see [`itch/PAGE.md`](itch/PAGE.md).
 
 ---
 
 ## 1. What it is, in one breath
 
-- **One self-contained file:** `index.html` (~640 lines). HTML + CSS + JS in a single document.
+- **One self-contained file:** `index.html` (~650 lines, decimal.js inlined). HTML + CSS + JS in a single document.
 - **Zero external requests:** [`decimal.js`](https://github.com/MikeMcl/decimal.js/) v10.4.3 (arbitrary-precision big numbers) is **inlined directly into `index.html`** — the pinned source is kept at `vendor/decimal.min.js`. No CDN, no sibling files: the game works offline, from `file://`, and can't 403 when hosted (e.g. on itch.io).
 - **No build step.** No framework. Vanilla JS in one IIFE. Open the file and it runs.
 - **Persists** to `localStorage` with offline progress.
@@ -46,7 +51,7 @@ fully offline (even straight from `file://`).
 
 ### Run the tests
 ```bash
-npm install   # installs jsdom + decimal.js as devDependencies
+npm install   # jsdom + decimal.js (tests); playwright-core (itch asset tooling)
 npm test      # boots the game in jsdom and asserts tap/recompute/no-errors
 ```
 
@@ -115,7 +120,10 @@ The economy is unbounded — values reach `1e5000+` — so **every unbounded qua
 raw number via `+`/`<`; you must use the library API (`.plus`, `.times`, `.gte`, etc.).
 
 - `D(x)` is the constructor shortcut (`new Decimal(x)`), with `Decimal.set({precision:30})`.
-- A guard at the top of the IIFE shows a "needs internet" message and bails if `Decimal` failed to load.
+- A guard at the top of the IIFE shows a "couldn't load the engine" notice and bails if `Decimal`
+  is somehow missing. Since decimal.js is now inlined (§9) this can't realistically fire, but it's
+  kept as defensive insurance — and it no longer crashes (it builds its own notice element instead
+  of assuming one exists in the DOM).
 
 **Decimal** (big, library API): `s.dream`, `s.lifetime`, `s.maxDream`, all per-second / per-click
 values, all costs, and the multipliers `m.click` / `m.all` / `m.perGen[id]`, `distMul`, `appAll`,
@@ -309,33 +317,20 @@ window.__game = {
 
 Setting `__TEST` also disables the `setInterval` loop so tests drive `tick()` manually.
 
-Minimal harness (the one used to validate this build):
+How the harness works (`test/harness.mjs`): it reads `index.html`, **strips the inlined
+`<script id="decimal-lib">…</script>` block**, and injects `Decimal` from the npm `decimal.js`
+package via `beforeParse` — so tests get the real library without executing the 32 KB minified
+bundle inside jsdom. The key line:
 
 ```js
-// test/harness.mjs
-import fs from 'node:fs';
-import { JSDOM, VirtualConsole } from 'jsdom';
-import Decimal from 'decimal.js';
-
-export function boot({ test = false, seed = null } = {}) {
-  let html = fs.readFileSync('index.html', 'utf8')
-    .replace(/<script src="https:\/\/cdnjs[^"]*"><\/script>\s*/g, ''); // strip CDN; inject locally
-  const errors = [];
-  const vc = new VirtualConsole();
-  vc.on('jsdomError', e => errors.push(e.detail?.message || e.message));
-  const dom = new JSDOM(html, {
-    url: 'https://x.test/', runScripts: 'dangerously', pretendToBeVisual: true, virtualConsole: vc,
-    beforeParse(w) {
-      w.Decimal = Decimal;
-      w.requestAnimationFrame = cb => cb(0);
-      w.addEventListener('error', ev => errors.push(ev.error?.message || ev.message));
-      if (test) w.__TEST = true;
-      if (seed) try { w.localStorage.setItem('siri_idle_save_v1', seed); } catch {}
-    }
-  });
-  return { dom, window: dom.window, document: dom.window.document, errors };
-}
+const html = fs.readFileSync(path.join(root, 'index.html'), 'utf8')
+  .replace(/<script id="decimal-lib">[\s\S]*?<\/script>\s*/g, '');   // strip inlined lib; inject below
+// …then in JSDOM's beforeParse(w):  w.Decimal = Decimal;  w.requestAnimationFrame = cb => cb(0);
+//   if (test) w.__TEST = true;  if (seed) w.localStorage.setItem('siri_idle_save_v1', seed);
 ```
+
+A `VirtualConsole` collects `jsdomError`/`window.error` events into an `errors` array so tests can
+assert the game booted clean. See the file for the full implementation.
 
 Things worth asserting: zero `errors` after exercising tap/buy/kick/theme/dismiss; a buy actually
 spends the right cost; `recompute()` produces stable multipliers; a seeded old save loads and
@@ -346,7 +341,7 @@ offline progress is credited; bulk-buy `maxBuy` never overspends.
 
 ---
 
-## 9. The vendored dependency
+## 9. The numbers dependency (inlined)
 
 `decimal.js` v10.4.3 is **inlined directly into `index.html`** (in a `<script id="decimal-lib">`
 block in `<head>`), making the file a single, truly self-contained document: no CDN request, no
@@ -374,13 +369,15 @@ npm test
 
 Two reasonable shapes. Pick based on how much you want to fiddle.
 
-### Option A — keep it a single file (pragmatic, zero tooling)
+### Option A — keep it a single file (this is what it is today)
 ```
 .
-├── index.html            # the game (renamed)
-├── vendor/decimal.min.js # vendored dependency
+├── index.html            # the game — decimal.js inlined, no sibling deps to load
+├── vendor/decimal.min.js # pinned source the inline copy is generated from (§9)
+├── itch/                 # itch.io page kit: PAGE.md, src/*.html templates, generate.ts, images
 ├── README.md             # this doc
 ├── LICENSE
+├── package.json
 └── test/
     ├── harness.mjs
     └── game.test.mjs
@@ -432,10 +429,13 @@ jobs:
 - **Single-quoted `innerHTML` + apostrophes** breaks parsing. See §4.
 - **Claude artifact sandbox** blocks `localStorage` and external scripts — irrelevant for GitHub
   Pages, but it's why the storage calls are defensively wrapped.
-- **The in-game "What's New" panel is intentionally *not* a real changelog** — it still describes the
-  old dream-diving version. That inconsistency is a deliberate bit (a bad AI product with a bad
-  changelog). Keep a real CHANGELOG.md separately if you want one.
-- **Decimal CDN = first-load network requirement.** Vendor it (§9).
+- **The in-game "What's New" panel is satire, not a factual changelog.** Entries are written in
+  Apple's release-notes voice as part of the joke; the newest ("Version 6.1 — Legibility") winks at
+  real changes (the contrast fix, single-file build, favicon) while staying in character. The panel
+  isn't version-gated, so any new entry shows to all players on next load. Keep a real CHANGELOG.md
+  separately if you want a factual one.
+- **No network needed.** decimal.js is inlined (§9) — no CDN, no first-load requirement; the game
+  runs offline, from `file://`, and can't 403 on a CDN host like itch.io.
 
 ---
 
@@ -443,10 +443,12 @@ jobs:
 
 This is **parody/satire** and is not affiliated with, endorsed by, or sponsored by Apple Inc.
 "Apple", "Siri", "Apple Intelligence", and product names are trademarks of their respective owners
-and are used here only for commentary and parody. Before publishing publicly, consider:
-- a one-line disclaimer in the README and footer,
-- not shipping any actual Apple logos/marks or implying endorsement,
-- picking a distinct repo/project name (the in-app title can stay as the joke).
+and are used here only for commentary and parody. It ships as a **free, non-commercial** parody;
+the protective measures applied:
+- a parody disclaimer in the in-game footer **and** at the top of the itch.io description,
+- **no** Apple logos/marks or App Store icons anywhere (the gradient Siri orb is generic),
+- a distinct repo/project name (`hey-siri-summarise-this`); the in-app "Apple Intelligence™" title stays as the joke,
+- itch.io's generative-AI metadata field answered honestly (disclosure ≠ marketing copy — keep "AI generated" out of the cover/description).
 
 ---
 
