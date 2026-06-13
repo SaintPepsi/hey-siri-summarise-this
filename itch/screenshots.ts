@@ -1,13 +1,14 @@
 // Captures gameplay screenshots from the live game for the itch.io page.
-// Requires the game served locally first:  npm run serve   (http://localhost:8000)
-// Then:  bun itch/screenshots.ts
+// The game is a self-contained static file, so we load it via file:// — no server needed.
+//   bun itch/screenshots.ts      (or: node itch/screenshots.ts)
 import { chromium } from "playwright-core";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
 const here = dirname(fileURLToPath(import.meta.url));
-const URL = "http://localhost:8000/";
-const W = 1280, H = 800;
+const URL = "file://" + join(here, "..", "index.html");
+// Portrait: the UI is now a centred, viewport-locked app shell, so portrait frames it best.
+const W = 640, H = 960;
 
 const browser = await chromium.launch({ channel: "chrome" });
 try {
@@ -20,22 +21,27 @@ try {
   await page.screenshot({ path: join(here, "shot-1-title.png") });
   console.log("✓ shot-1-title.png");
 
-  // 2) mid-play: tap a bunch so numbers climb and floats fly
-  for (let i = 0; i < 25; i++) { await page.click("#go"); await page.waitForTimeout(40); }
+  // 2) mid-play: tap so numbers climb, summaries stack, floats fly
+  for (let i = 0; i < 40; i++) { await page.click("#go"); await page.waitForTimeout(35); }
   await page.screenshot({ path: join(here, "shot-2-tapping.png") });
   console.log("✓ shot-2-tapping.png");
 
-  // 3) the upgrades / model-upgrades panel (the core loop hook)
-  const upgrades = page.locator(".panel").first();
-  await upgrades.scrollIntoViewIfNeeded();
-  await page.waitForTimeout(200);
+  // 3) the shop sheet — open Features (the core buying loop) and buy a couple generators
+  await page.click('.tab[data-shop="gen"]');
+  await page.waitForTimeout(450);
+  const gen = page.locator("#genlist [data-gen]").first();
+  for (let i = 0; i < 3; i++) { await gen.click().catch(() => {}); await page.waitForTimeout(80); }
+  await page.waitForTimeout(250);
   await page.screenshot({ path: join(here, "shot-3-upgrades.png") });
   console.log("✓ shot-3-upgrades.png");
 
-  // 4) light theme — show the toggle works (distinctive feature)
-  await page.click("#themebtn");
-  await page.waitForTimeout(300);
-  await page.evaluate(() => window.scrollTo(0, 0));
+  // 4) light theme — toggle via Settings (its new home), then close the sheet to show the app
+  await page.click('.tab[data-shop="settings"]');
+  await page.waitForTimeout(450);
+  await page.click("#themetoggle");
+  await page.waitForTimeout(250);
+  await page.click("#sheetclose");
+  await page.waitForTimeout(450);
   await page.screenshot({ path: join(here, "shot-4-light.png") });
   console.log("✓ shot-4-light.png");
 
