@@ -833,5 +833,28 @@
   }
 })();
 </script>
+<script>
+// Cursor bridge for ianhogers.dev: the host draws its own cursor and an iframe swallows
+// pointer events, so when framed we hide ours and post the pointer position up.
+// Reference: https://github.com/SaintPepsi/clank-lit/pull/2
+if (window.self !== window.top) {
+  const st = document.createElement("style");
+  st.textContent = "*, *::before, *::after { cursor: none !important; }";
+  document.head.appendChild(st);
+  const post = (kind, e) => {
+    const t = e && e.target instanceof Element ? e.target : null;
+    top.postMessage({
+      type: "pixel-cursor", kind,
+      x: e ? e.clientX : 0, y: e ? e.clientY : 0,
+      clickable: !!(t && t.closest("a, button, [role=button], input, select, textarea, label")),
+      draggable: !!(t && t.closest("[draggable=true]")),
+    }, "*");
+  };
+  document.addEventListener("mousemove", e => post("move", e), { passive: true });
+  document.addEventListener("mousedown", e => post("down", e), { passive: true });
+  document.addEventListener("mouseup",   e => post("up", e),   { passive: true });
+  document.addEventListener("mouseleave", () => post("leave"));
+}
+</script>
 </body>
 </html>
